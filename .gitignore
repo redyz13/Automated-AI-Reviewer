@@ -1,0 +1,9 @@
+venv/
+results/
+models/
+data/
+font/
+*.pyc
+*.rc
+*.spec
+__pycache__/
