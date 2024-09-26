@@ -1,5 +1,6 @@
 import json
 import os
+import torch
 from transformers import LEDForConditionalGeneration, LEDTokenizer
 
 # Load the model and tokenizer
@@ -16,11 +17,20 @@ def generate_review(model, tokenizer, paper_text):
     input_ids = inputs["input_ids"].to(model.device)
     attention_mask = inputs["attention_mask"].to(model.device)
     
+    global_attention_mask = torch.zeros_like(attention_mask)
+    global_attention_mask[:, 0] = 1
+    
     outputs = model.generate(
-        input_ids, attention_mask=attention_mask, max_length=1024, num_beams=5,
-        repetition_penalty=1.3, no_repeat_ngram_size=3,
+        input_ids, 
+        attention_mask=attention_mask, 
+        global_attention_mask=global_attention_mask,
+        max_length=1024, 
+        num_beams=5,
+        repetition_penalty=1.3, 
+        no_repeat_ngram_size=3,
         early_stopping=True,
     )
+    
     review = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return review
 
@@ -36,7 +46,7 @@ def write_review_to_file(review, output_path):
         f.write(review)
 
 if __name__ == "__main__":
-    checkpoint = "../../models/flan_t5_xxl_el=2.06"
+    checkpoint = "../../models/led_large_16384_el=2.60"
     test_path = os.path.abspath("../../data/processed/test_dataset.json")
     output_review_path = os.path.abspath("../../results/generated_review.txt")
 

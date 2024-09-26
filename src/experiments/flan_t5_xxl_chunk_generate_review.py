@@ -91,7 +91,6 @@ def generate_structured_review_progressive(model, tokenizer, paper_text, output_
         if section not in review:
             review[section] = f"\n\n[{section.upper()}]\n{section_text}"
 
-            # Scrivi ogni sezione progressivamente nel file di output
             with open(output_path, "a", encoding="utf-8") as output_file:
                 output_file.write(review[section])
         

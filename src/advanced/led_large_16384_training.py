@@ -129,7 +129,7 @@ if __name__ == "__main__":
     training_args = TrainingArguments(
         output_dir="../../results", # The output directory
         eval_strategy="epoch", # Evaluation is done at the end of each epoch
-        num_train_epochs=5, # Number of training epochs
+        num_train_epochs=10, # Number of training epochs
         learning_rate=1e-4, # Learning rate
         per_device_train_batch_size=1, # Batch size for training
         per_device_eval_batch_size=1, # Batch size for evaluation
