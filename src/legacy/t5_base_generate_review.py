@@ -13,7 +13,17 @@ def generate_review(model, tokenizer, paper_text):
     inputs = tokenizer(paper_text, return_tensors="pt", max_length=512, truncation=True, padding="max_length")
     input_ids = inputs["input_ids"]
     attention_mask = inputs["attention_mask"]
-    outputs = model.generate(input_ids, attention_mask=attention_mask, max_length=512, num_beams=4, early_stopping=True)
+
+    outputs = model.generate(
+        input_ids, 
+        attention_mask=attention_mask, 
+        max_length=512, 
+        num_beams=5,
+        repetition_penalty=1.3, 
+        no_repeat_ngram_size=3,
+        early_stopping=True,
+    )
+
     review = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return review
 

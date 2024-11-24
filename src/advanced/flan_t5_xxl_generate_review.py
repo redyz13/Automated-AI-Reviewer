@@ -24,11 +24,16 @@ def generate_review(model, tokenizer, paper_text):
     input_ids = inputs["input_ids"].to(model.device)
     attention_mask = inputs["attention_mask"].to(model.device)
     
-    outputs = model.base_model.generate(
-        input_ids, attention_mask=attention_mask, max_length=512, num_beams=5,
-        repetition_penalty=1.3, top_p=0.9, top_k=50, no_repeat_ngram_size=3,
-        early_stopping=False, do_sample=True
+    outputs = model.generate(
+        input_ids, 
+        attention_mask=attention_mask, 
+        max_length=512, 
+        num_beams=5,
+        repetition_penalty=1.3, 
+        no_repeat_ngram_size=3,
+        early_stopping=True,
     )
+
     review = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return review
 
