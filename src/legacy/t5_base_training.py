@@ -60,6 +60,7 @@ def compute_metrics(pred):
     bleu_result = bleu.compute(predictions=decoded_preds, references=[[label] for label in decoded_labels])
     meteor_result = meteor.compute(predictions=decoded_preds, references=decoded_labels)
     bertscore_result = bertscore.compute(predictions=decoded_preds, references=decoded_labels, lang="en")
+    rouge_result = rouge.compute(predictions=decoded_preds, references=decoded_labels)
 
     # Return metrics in a readable format
     metrics = {
@@ -68,6 +69,10 @@ def compute_metrics(pred):
         'eval_bertscore_precision': np.mean(bertscore_result['precision']),
         'eval_bertscore_recall': np.mean(bertscore_result['recall']),
         'eval_bertscore_f1': np.mean(bertscore_result['f1']),
+        'eval_rouge1': rouge_result['rouge1'],
+        'eval_rouge2': rouge_result['rouge2'],
+        'eval_rougeL': rouge_result['rougeL'],
+        'eval_rougeLsum': rouge_result['rougeLsum'],
     }
 
     return metrics
@@ -86,7 +91,11 @@ class PrintMetricsCallback(TrainerCallback):
                 print(colored(f"- METEOR: {metrics.get('eval_meteor', 'N/A')}", "yellow"))
                 print(colored(f"- BERTScore Precision: {metrics.get('eval_bertscore_precision', 'N/A')}", "yellow"))
                 print(colored(f"- BERTScore Recall: {metrics.get('eval_bertscore_recall', 'N/A')}", "yellow"))
-                print(colored(f"- BERTScore F1: {metrics.get('eval_bertscore_f1', 'N/A')}\n", "yellow"))
+                print(colored(f"- BERTScore F1: {metrics.get('eval_bertscore_f1', 'N/A')}", "yellow"))
+                print(colored(f"- ROUGE-1: {metrics.get('eval_rouge1', 'N/A')}", "yellow"))
+                print(colored(f"- ROUGE-2: {metrics.get('eval_rouge2', 'N/A')}", "yellow"))
+                print(colored(f"- ROUGE-L: {metrics.get('eval_rougeL', 'N/A')}", "yellow"))
+                print(colored(f"- ROUGE-Lsum: {metrics.get('eval_rougeLsum', 'N/A')}\n", "yellow"))
 
 if __name__ == "__main__":
     train_path = os.path.abspath("../../data/processed/train_dataset.json")
@@ -143,6 +152,7 @@ if __name__ == "__main__":
     bleu = evaluate.load("bleu")
     meteor = evaluate.load("meteor")
     bertscore = evaluate.load("bertscore")
+    rouge = evaluate.load("rouge")
 
     # Define the trainer
     trainer = Trainer(
