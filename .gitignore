@@ -1,7 +1,9 @@
 venv/
-results/
-models/
-data/
+results/*.txt
+models/**
+!models/.gitkeep
+data/**
+!data/.gitkeep
 font/
 *.pyc
 *.rc
